@@ -22,8 +22,8 @@ mysqli_select_db($con, $DB_NAME);
 mysqli_query($con, "SET NAMES 'UTF-8'");
 
 // 取得資料
-$sql = "SELECT * FROM user";
-$result = mysqli_query($con, $sql);
+//$sql = "SELECT * FROM user";
+//$result = mysqli_query($con, $sql);
 
 //以下參考用
 
