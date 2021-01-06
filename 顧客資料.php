@@ -2,9 +2,14 @@
 
 include_once('connect.php');
 
-// 取得Customer表的資料，並存在data裡
-$sql = "SELECT * FROM Customer_Info";
+//如果搜尋欄有輸入值，用搜尋的條件查，沒有的話查詢所有的資料
+if(isset($_REQUEST['condition'])){
+	$sql = "SELECT * FROM Customer_Info WHERE Member_Id LIKE '%".$_REQUEST['condition']."%' OR Name LIKE '%".$_REQUEST['condition']."%' OR email LIKE '%".$_REQUEST['condition']."%' OR Phone LIKE '%".$_REQUEST['condition']."%' OR Vip_level LIKE '%".$_REQUEST['condition']."%' OR Joined_time LIKE '%".$_REQUEST['condition']."%' ";
+}else{
+	$sql = "SELECT * FROM Customer_Info";
+}
 $data = mysqli_query($con, $sql);
+
 
 //分頁變數
 $dataCount=mysqli_num_rows($data); //共有幾筆資料
@@ -17,6 +22,8 @@ if (!isset($_GET["page"])){ //假如$_GET["page"]未設置
 }
 $start = ($page-1)*$per; //每一頁開始的資料序號
 $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); //從$start序號開始，一次取$per筆
+
+
 ?>
 
 
@@ -125,8 +132,10 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 			<button class="button" onclick="window.location.href='function.html';"style="float: right;padding: 12px 28px;font-size: 14px">回首頁</button>
 		</div>
 		<div class="search">
+			<form action='顧客資料.php' method='POST'>
 			<!-- 關鍵字搜尋 -->
-			<p>關鍵字：<input id="searchBar" type="text" placeholder="編號/姓名/等級/email/電話/加入時間"><input id="searchBtn" type="submit" value="查詢"></p>
+			<p>關鍵字：<input id="searchBar" type="text" name="condition" placeholder="編號/姓名/等級/email/電話/加入時間"><input id="searchBtn" type="submit" value="查詢"></p>
+			</form>
 		</div>
 		<div>
 			<table class="btn">

@@ -2,8 +2,13 @@
 
 include_once('connect.php');
 
-// 取得所有的Purchase_Behavior資料並放在data裡
-$sql = "SELECT * FROM Purchase_Behavior";
+//如果搜尋欄有輸入值，用搜尋的條件查，沒有的話查詢所有的資料
+if(isset($_REQUEST['condition'])){
+	$sql = "SELECT * FROM Purchase_Behavior WHERE Member_Id LIKE '%".$_REQUEST['condition']."%' OR Purchase_Id LIKE '%".$_REQUEST['condition']."%' OR Purchase_Time LIKE '%".$_REQUEST['condition']."%' OR Purchased_Items LIKE '%".$_REQUEST['condition']."%' OR Store_Of_Purchase LIKE '%".$_REQUEST['condition']."%'";
+}else{
+	$sql = "SELECT * FROM Purchase_Behavior";
+}
+
 $data = mysqli_query($con, $sql);
 
 //分頁變數
@@ -128,8 +133,10 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 			<button class="button" onclick="window.location.href='function.html';"style="float: right;padding: 12px 28px;font-size: 14px">回首頁</button>
 		</div>
 		<div class="search">
+			<form action='消費行為.php' method='POST'>
 			<!-- 關鍵字搜尋 -->
-			<p>關鍵字：<input id="searchBar" type="text" placeholder="MID/OID/消費時間/消費品項/消費店家"><input id="searchBtn" type="submit" value="查詢"></p>
+			<p>關鍵字：<input id="searchBar" type="text" name="condition" placeholder="MID/OID/消費時間/消費品項/消費店家"><input id="searchBtn" type="submit" value="查詢"></p>
+			</form>
 		</div>
     <div style="border:1px solid black;" class="recordTitle">
 			<p border="1">消費行為紀錄</p>
