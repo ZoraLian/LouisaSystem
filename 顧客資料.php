@@ -41,7 +41,8 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
     			padding: 20px 10px;
     		}
     		.header h1{
-    			padding:10px;color:white;
+    			padding:10px;
+					color:white;
     		}
     		.header a{
     			float: left;
@@ -67,9 +68,10 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 					border-radius: 4px;
     		}
     		.header button:hover {
-    			background-color: #FFBB77;color: black;
+    			background-color: #FFBB77;
+					color: black;
 				}
-				
+
 				#searchBar{
 					padding:5px 15px;
 					width: 16%;
@@ -121,6 +123,48 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 					text-align: center;
 				}
 
+				/* .header dropbtn{
+          background-color: #3498DB;
+          color: white;
+          padding: 16px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+        } */
+
+        .dropdown {
+          position: absolute;
+          display: inline-block;
+					align-items:center;
+					justify-content:center
+        }
+
+        .dropdown-content {
+          display: none;
+          text-align: center;
+          position: absolute;
+          background-color: #f1f1f1;
+          min-width:100px;
+          overflow:visible;
+          z-index: 1;
+        }
+
+        .dropdown-content button {
+          color: black;
+        	padding:12 30px;
+          text-decoration: none;
+          display: block;
+          background-color:white;
+        }
+
+      	.dropdown button:hover {
+					background-color: #ddd;
+				}
+
+        .show {
+					display: block;
+				}
+
     	</style>
 	</head>
 	<body>
@@ -128,7 +172,14 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 			<h1>會員關係管理</h1>
 			<button class="button" onclick="window.location.href='顧客資料.php'">顧客資料</button>
 			<button class="button" onclick="window.location.href='消費行為.php'">消費行為</button>
-			<button class="button" onclick="window.location.href='圖表分析.html'">圖表分析</button>
+			<div class="dropdown">
+				<button class="button" onclick="myFunction()">圖表分析</button>         
+        <div id="myDropdown" class="dropdown-content">
+          <button onclick="window.location.href='顧客個人分析.php'">顧客個人分析</button>
+          <button onclick="window.location.href='數據圖表分析.php'">數據圖表分析</button>
+          <button onclick="window.location.href='消費活動分析.php'">消費活動分析</button>
+				</div>
+			</div>
 			<button class="button" onclick="window.location.href='function.html';"style="float: right;padding: 12px 28px;font-size: 14px">回首頁</button>
 		</div>
 		<div class="search">
@@ -196,5 +247,10 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 			< <?php echo '第'.$page.'頁，共有'.$pageCount.'頁'; ?> >
 			</div>
 		</div>
+		<script type="text/javascript">
+			function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+      }
+    </script>>
 	</body>
 </html>
