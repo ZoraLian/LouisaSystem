@@ -4,12 +4,12 @@ include_once('connect.php');
 
 //如果搜尋欄有輸入值，用搜尋的條件查，沒有的話查詢所有的資料
 if(isset($_REQUEST['condition'])){
-	$sql = "SELECT * FROM Customer_Info WHERE Member_Id LIKE '%".$_REQUEST['condition']."%' OR Name LIKE '%".$_REQUEST['condition']."%' OR email LIKE '%".$_REQUEST['condition']."%' OR Phone LIKE '%".$_REQUEST['condition']."%' OR Vip_level LIKE '%".$_REQUEST['condition']."%' OR Joined_time LIKE '%".$_REQUEST['condition']."%' ";
+	$sql = "SELECT * FROM Purchase_Behavior WHERE Member_Id LIKE '%".$_REQUEST['condition']."%' OR Purchase_Id LIKE '%".$_REQUEST['condition']."%' OR Purchase_Time LIKE '%".$_REQUEST['condition']."%' OR Purchased_Items LIKE '%".$_REQUEST['condition']."%' OR Store_Of_Purchase LIKE '%".$_REQUEST['condition']."%'";
 }else{
-	$sql = "SELECT * FROM Customer_Info";
+	$sql = "SELECT * FROM Purchase_Behavior";
 }
-$data = mysqli_query($con, $sql);
 
+$data = mysqli_query($con, $sql);
 
 //分頁變數
 $dataCount=mysqli_num_rows($data); //共有幾筆資料
@@ -23,13 +23,12 @@ if (!isset($_GET["page"])){ //假如$_GET["page"]未設置
 $start = ($page-1)*$per; //每一頁開始的資料序號
 $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); //從$start序號開始，一次取$per筆
 
-
 ?>
 
 
 <html>
 	<head>
-		<title>會員管理系統-顧客關係管理</title>
+		<title>會員管理系統-個別消費行為紀錄</title>
     	<meta charset="UTF-8" />
     	<style>
     		*{
@@ -41,8 +40,7 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
     			padding: 20px 10px;
     		}
     		.header h1{
-    			padding:10px;
-					color:white;
+    			padding:10px;color:white;
     		}
     		.header a{
     			float: left;
@@ -55,26 +53,16 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
     			border-radius: 4px;
     		}
     		.header button{
-					background-color:#D26900;
-					border: none;
-					color: white;
-					padding: 15px 32px;
-					text-align: center;
-					text-decoration: none;
-					display: inline-block;
-					font-size: 16px;
-					margin: 4px 2px;
-					cursor: pointer;
-					border-radius: 4px;
+    			background-color:#D26900;border: none;color: white;padding: 15px 32px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border-radius: 4px;
     		}
     		.header button:hover {
     			background-color: #FFBB77;
 					color: black;
 				}
-
+				
 				#searchBar{
 					padding:5px 15px;
-					width: 16%;
+					width: 18%;
 					border:2px black solid;
 					cursor:pointer;
 					-webkit-border-radius: 5px;
@@ -93,6 +81,21 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 					color: white;
 				}
 
+				.recordTitle{
+					background-color: #EA7500;
+					color: white;
+					text-align: center;
+					padding: 1px;
+					margin-top: 2px;
+					border-radius: 10px;
+				}
+
+				.tableContent{
+					background-color: white;
+					padding: 10px;
+					text-align: center;
+				}
+
 				th { 
   				background-color: #FFBB77;
   				padding:15px;
@@ -101,7 +104,7 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 					text-align: center;
 				}
 				
-				.userInfoList td{ 
+				.userPurInfoList td{ 
   				border:1px solid grey;
   				padding:10px;
 					text-align: center;
@@ -118,19 +121,6 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 				tr:nth-child(even){
   				background: #F0F0F0;
 				}
-
-				.footer{
-					text-align: center;
-				}
-
-				/* .header dropbtn{
-          background-color: #3498DB;
-          color: white;
-          padding: 16px;
-          font-size: 16px;
-          border: none;
-          cursor: pointer;
-        } */
 
         .dropdown {
           position: absolute;
@@ -183,12 +173,16 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 			<button class="button" onclick="window.location.href='function.html';"style="float: right;padding: 12px 28px;font-size: 14px">回首頁</button>
 		</div>
 		<div class="search">
-			<form action='顧客資料.php' method='POST'>
+			<form action='消費行為.php' method='POST'>
 			<!-- 關鍵字搜尋 -->
-			<p>關鍵字：<input id="searchBar" type="text" name="condition" placeholder="編號/姓名/等級/email/電話/加入時間"><input id="searchBtn" type="submit" value="查詢"></p>
+			<p>關鍵字：<input id="searchBar" type="text" name="condition" placeholder="MID/OID/消費時間/消費品項/消費店家"><input id="searchBtn" type="submit" value="查詢"></p>
 			</form>
 		</div>
-		<div>
+    <div style="border:1px solid black;" class="recordTitle">
+			<p border="1">消費行為紀錄</p>
+    </div>
+		<div class="tableContent" style="border:1px solid black;">
+				<div>
 			<table class="btn">
 				<td><button onclick="window.location.href='?page=1'">首頁</button></td>
 				<?php
@@ -201,17 +195,22 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 				?> 
     			<td><button onclick="window.location.href='?page=<?php echo $pageCount ?>'">末頁</button></td>
 		</div>
-		<div class="tableContent">
-			<table border="1" width=100% class="userInfoList">
+			<table border="1" width=100% class="userPurInfoList">
 				<tr>
-					<th>CustomerId</th>
-					<th>Name</th>
-					<th>Sex</th>
-					<th>Age</th>
-					<th>Email</th>
-					<th>Phone</th>
-					<th>Level</th>
-					<th>JoinTime</th>					
+					<th>MemberID</th>
+          <!-- Member_Id -->
+          <th>OrderID</th> 
+          <!-- Purchase_Id -->
+          <th>消費時間</th>
+          <!-- Purchase_Time -->
+          <th>消費品項</th>
+          <!-- Purchase_Item -->
+          <th>數量</th>
+          <!-- Quantity -->
+          <th>總消費金額</th>
+          <!-- Sum_Of_Purchase -->
+          <th>消費店家</th>
+          <!-- Store_Of_Purchase -->
 				</tr>
 				<?php 
 					// 用fetch_row讀取陣列的資料(上面已經把customer的資料都撈出來並放在$data裡)，row是一列一列讀，並把它存在&命名為rs，資料型態為array
@@ -225,7 +224,7 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 				?>
 				<tr>
 				<!-- 如果超出範圍的話會變null，因此要設限制式查看array抓出來的東西是否是null -->
-				<?php if(isset($rs[0]) && isset($rs[1]) && isset($rs[2]) && isset($rs[3]) && isset($rs[4]) && isset($rs[5]) && isset($rs[6]) && isset($rs[7])){?>
+				<?php if(isset($rs[0]) && isset($rs[1]) && isset($rs[2]) && isset($rs[3]) && isset($rs[4]) && isset($rs[5]) && isset($rs[6])){?>
 					<?php $memberID = $rs[0];?>
 					<td><a href="個別消費行為.php?MemberID=<?php echo $rs[0];?>"><?php echo $rs[0];?></a></td>
 					<td><?php echo $rs[1];?></td>
@@ -234,7 +233,6 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 					<td><?php echo $rs[4];?></td>
 					<td><?php echo $rs[5];?></td>
 					<td><?php echo $rs[6];?></td>
-					<td><?php echo $rs[7];?></td>
 				<?php
 				}
 				?>				
@@ -243,10 +241,8 @@ $result = mysqli_query($con, $sql.' LIMIT '.$start.', '.$per) or die("Error"); /
 				}
 				?>
 			</table>
-			<div class="footer">
-			< <?php echo '第'.$page.'頁，共有'.$pageCount.'頁'; ?> >
+				< <?php echo '第'.$page.'頁，共有'.$pageCount.'頁'; ?> >
 			</div>
-		</div>
 		<script type="text/javascript">
 			function myFunction() {
       document.getElementById("myDropdown").classList.toggle("show");

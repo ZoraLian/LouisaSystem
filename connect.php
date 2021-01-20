@@ -2,10 +2,10 @@
 
 //此檔用來建置資料庫連線
 // 定義資料庫資訊
-$DB_NAME = "test1230"; // 資料庫名稱
-$DB_USER = "root"; // 資料庫管理帳號
-$DB_PASS = "oSc7HBXMYVY6YkiQ"; // 資料庫管理密碼
-$DB_HOST = "localhost"; // 資料庫位址
+$DB_NAME = "TG09"; // 資料庫名稱
+$DB_USER = "TG09"; // 資料庫管理帳號
+$DB_PASS = "u73e9x"; // 資料庫管理密碼
+$DB_HOST = "140.119.19.73:9306"; // 資料庫位址
 
 // 連接 MySQL 資料庫伺服器
 $con = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS);
@@ -15,11 +15,13 @@ if (empty($con)) {
     exit;
 }
 
-//選擇資料庫(test1230)
+//選擇資料庫(TG09)
 mysqli_select_db($con, $DB_NAME);
 
 // 設定連線編碼
 mysqli_query($con, "SET NAMES 'UTF-8'");
+mysqli_set_charset($con,"utf8");
+
 
 // 取得資料
 //$sql = "SELECT * FROM user";
